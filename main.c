@@ -2,14 +2,20 @@
 #include <stdlib.h>
 #include <string.h>
 #include <ncurses.h>
+#include <signal.h>
+
 #include "event.h"
 
-struct event *events=NULL;
+//struct event *events=NULL;
 
-int main(int argc, char **argv){
+
+
+int main(){
+	signal(SIGINT,INThandler); //ctrl-c handler
+
     //int yMax, xMax;
     //getmaxyx(stdscr,yMax,xMax);
-    FILE *file;
+    //FILE *file;
 	file = fopen(".data.txt","r+");
 	if(file==NULL){
 		file=fopen(".data.txt","w+");
@@ -137,12 +143,7 @@ int main(int argc, char **argv){
 					insert_event(&events,name,date,time);
 					char ch = wgetch(win);
 					check = (ch=='\n');
-					//wclear(win);
-					//box(win,0,0);
-					//wrefresh(win);
-					//refresh();
 
-					//printw("%s\n",name);
 					if(check){
 						if(atoi(substr(date,0,2))>12||atoi(substr(date,0,2))<1){
 						wclear(win);

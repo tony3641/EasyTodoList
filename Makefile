@@ -5,7 +5,7 @@
 
 TARGET = list
 OBJS = event.o main.o
-CFLAGS += -Wall -Wextra -std=c11 -lncurses
+CFLAGS += -Wall -Wextra -std=c11 -lncurses -g
 
 $(TARGET): $(OBJS)
 	$(CC) $(OBJS) -o $(TARGET) $(CFLAGS)

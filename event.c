@@ -3,6 +3,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <ncurses.h>
+#include <signal.h>
 #include "event.h"
 
 //pos0 inclusive pos1 exclusive
@@ -130,7 +131,6 @@ void delete(struct event ** event, char* name){
 	free(temp);
 }
 
-
 void save_event_to_file(FILE *file, const struct event* event){
 	const struct event *temp = event;
 	while(temp!=NULL){
@@ -146,4 +146,10 @@ void save_event_to_file(FILE *file, const struct event* event){
 		fprintf(file,"%d\n\n",temp->minute);
 		temp=temp->next;
 	}
+}
+
+void INThandler(int sig){
+	fprintf(stderr,"ctrl-c singal detected...saving data\n");
+	save_event_to_file(file,events);
+	exit(0);
 }
