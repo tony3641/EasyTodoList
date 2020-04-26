@@ -4,6 +4,7 @@
 #define MAX 100
 
 FILE *file;
+DIR *dr;
 struct event *events;
 
 enum Mode{

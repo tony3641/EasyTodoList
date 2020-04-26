@@ -3,7 +3,7 @@
 #include <string.h>
 #include <ncurses.h>
 #include <signal.h>
-
+#include <dirent.h>
 #include "event.h"
 
 //struct event *events=NULL;
@@ -11,28 +11,28 @@
 
 
 int main(){
+	char profile[11][100]; //maximum 10 profile!! 11th for ADD!!
+	struct dirent *directory;
+	dr = opendir(".");
+	int profile_num = 0;
+	while((directory=readdir(dr))!=NULL){
+        int len = strlen((char *)directory->d_name);
+        char* sub = substr(directory->d_name,len-4,len);
+		if(strlen(directory->d_name)>4&&directory->d_name[0]=='.'&&!strcmp(sub,".txt")){
+            strcpy(profile[profile_num],substr(directory->d_name,1,strlen(directory->d_name)-4));
+            printf("%s\n",profile[profile_num]);
+			profile_num++;
+		}
+	}
+	strcpy(profile[profile_num],"Add a new profile");
+	profile_num++;
+
 	signal(SIGINT,INThandler); //ctrl-c handler
 
     //int yMax, xMax;
     //getmaxyx(stdscr,yMax,xMax);
     //FILE *file;
-	file = fopen(".data.txt","r+");
-	if(file==NULL){
-		file=fopen(".data.txt","w+");
-		if(file==NULL){
-			fprintf(stderr,"Could not open/create data.txt\n");
-			return 1;
-		}
-	}
-
 	
-
-	int end = 0;
-	while(!end){
-    	end=read_next_event(file, &events);
-    }
-	
-	file=freopen(".data.txt","w", file);
 
 	//save_event_to_file(log,events);
 	//fprintf(log,"Returned: %d\n",returned);
@@ -44,17 +44,100 @@ int main(){
 
 	WINDOW *win = newwin(20,60,3,20);
    	WINDOW *menu = newwin(6,20,23,20);
-	printw("Warning:\n");
-	printw("Using ctrl-c can cause data loss.\n");
+	WINDOW *profile_select = newwin(30,70,3,15);
     refresh();
+	int reversed=0;
+	int selection;
+	while (1)
+	{
+		keypad(profile_select,true);
+		
+		mvwprintw(profile_select,0,10,"Please select a profile or create a new one.");
+		mvwprintw(profile_select,1,18,"Use arrow up/down to operate.");
+		wrefresh(profile_select);
+		for(int i=0;i<profile_num;i++){
+			
+			if(i==reversed){
+				refresh();
+				wattron(profile_select,A_REVERSE);
+				mvwprintw(profile_select,i+5,20,profile[i]);
+				wattroff(profile_select,A_REVERSE);
+			}
+			else{
+				mvwprintw(profile_select,i+5,20,profile[i]);
+			}
+		}
 
+		selection=wgetch(profile_select);
+		
+		switch (selection)
+		{
+			case KEY_UP:
+				reversed--;
+				if(reversed==-1)
+					reversed=profile_num-1;
+				break;
+			case KEY_DOWN:
+				reversed++;
+				if(reversed==profile_num)
+					reversed=0;
+				break;
+			default:
+				break;
+		}
+
+		if(selection==10)
+			break;
+	}
+	
+	if(!strcmp(profile[reversed],"Add a new profile")){
+		char new_profile[100];
+		char new_path[105];
+		wclear(profile_select);
+		wrefresh(profile_select);
+		mvwprintw(profile_select,2,14,"Enter new profile name(less than 100 char)");
+		echo();
+		mvwgetstr(profile_select,3,20,new_profile);
+		noecho();
+		strcat(new_path,".");
+		strcat(new_path,new_profile);
+		strcat(new_path,".txt");
+		printw("Profile: %s\n",new_profile);
+		file = fopen(new_path,"w+");
+		if(file==NULL){
+			fprintf(stderr,"Could not open/create %s\n",new_path);
+			return 1;
+		}
+		refresh();
+	}
+	else{
+		char filePath[100];
+		strcat(filePath,".");
+		strcat(filePath,profile[reversed]);
+		strcat(filePath,".txt");
+		printw("Profile: %s\n",profile[reversed]);
+		refresh();
+		//wgetch(profile_select);
+
+		file = fopen(filePath,"r+");
+		if(file==NULL){
+			fprintf(stderr,"Could not open/create %s\n",filePath);
+			return 1;
+		}
+		int end = 0;
+		while(!end){
+    		end=read_next_event(file, &events);
+    	}
+		file=freopen(filePath,"w", file);
+	}
+	wclear(profile_select);
+	
 	while(1){
 		wclear(win);
-	box(menu,0,0);
-	box(win,0,0);
-	mvwprintw(win,0,1,"EasyToDoList");
-	
-	wrefresh(menu);
+		box(menu,0,0);
+		box(win,0,0);
+		mvwprintw(win,0,1,"EasyToDoList");
+		wrefresh(menu);
     wrefresh(win);
 	keypad(menu,true);
 	//keypad(win,true);
@@ -114,14 +197,14 @@ int main(){
 		mode=Print;
 	else if(!strcmp(option[highlight],"Exit"))
 		break;
-	
+	     
     if(mode==Add){
-				int check=0;
-				//char *name=(char *)malloc(sizeof(char)*100);
-				static char name[100];
-				memset(name,0,sizeof(name));
-				char *date=(char *)malloc(sizeof(char)*10);
-				char *time=(char *)malloc(sizeof(char)*5);
+		int check=0;
+		//char *name=(char *)malloc(sizeof(char)*100);
+		static char name[100];
+		memset(name,0,sizeof(name));
+		char *date=(char *)malloc(sizeof(char)*10);
+		char *time=(char *)malloc(sizeof(char)*5);
 				while(!check){
 					wclear(win);
 					box(win,0,0);
@@ -140,7 +223,9 @@ int main(){
 					mvwprintw(win,10,1,"Event name: %s",name);
 					mvwprintw(win,11,1,"Date and time: %s %s",date,time);
 					mvwprintw(win,13,1,"Hit enter to save, any other key to re-input");
-					insert_event(&events,name,date,time);
+					//printw("Name i get: %s\n",name);
+					//refresh();
+					
 					char ch = wgetch(win);
 					check = (ch=='\n');
 
@@ -198,7 +283,7 @@ int main(){
 						box(win,0,0);
 						mvwprintw(win,0,1,"EasyToDoList");
 						wrefresh(win);
-						
+						insert_event(&events,name,date,time);
 						wclear(win);
 						box(win,0,0);
 						wrefresh(win);
@@ -208,7 +293,7 @@ int main(){
 						wgetch(win);
 						
 					}
-					}
+				}
 
 					
 				}
@@ -276,6 +361,7 @@ int main(){
     endwin();
 	free(events);
 	fclose(file);
+	closedir(dr);
 
     return 0;
 }

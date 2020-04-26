@@ -4,6 +4,7 @@
 #include <string.h>
 #include <ncurses.h>
 #include <signal.h>
+#include <dirent.h>
 #include "event.h"
 
 //pos0 inclusive pos1 exclusive
@@ -83,12 +84,16 @@ int read_next_event(FILE *file, struct event **this){
 
 void insert_event(struct event ** event, char *name, char* date, char* time){
 	struct event *item;
+	char *_name_ =(char *)malloc(sizeof(char)*100);
+	strcpy(_name_,name);
 	item=(struct event *)malloc(sizeof(struct event));
 	if(item==NULL)
 		exit(1);
-	if(name[strlen(name)-1]=='\n')
-		name[strlen(name)-1]='\0';
-	item->name=name;
+	if(_name_[strlen(_name_)-1]=='\n')
+		_name_[strlen(_name_)-1]='\0';
+	//printw("_name_ = %s",_name_);
+	refresh();
+	item->name = _name_;
 	item->month = atoi(substr(date,0,2));
     item->day = atoi(substr(date,3,5));
     item->year = atoi(substr(date,6,10));
@@ -151,5 +156,6 @@ void save_event_to_file(FILE *file, const struct event* event){
 void INThandler(int sig){
 	fprintf(stderr,"ctrl-c singal detected...saving data\n");
 	save_event_to_file(file,events);
+	closedir(dr);
 	exit(0);
 }
