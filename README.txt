@@ -1,7 +1,7 @@
 README file for EasyToDoList
 Author: Tony Han
 Course: CSE2451
-Date: 4/20/2020
+Date: 4/27/2020
 Instructor: Max Taylor
 
 Purpose:
@@ -21,9 +21,8 @@ Approach:
 The program relies on ncurses library to construct a terminal-based graphical window to prompt the user's input.
 Two sub-windows were created. They are win and menu. Win was used to show information as a screen. Menu was
 used to prompt the user's operation. Data-wise, the events data were implemented by a singly linked list.
-The program will load all events data from .data.txt file and save a linked list. Each node is an event.
-So when a new event is created, the program simply inserts the new node to the list. Same with delete and
-print operations.
+The program will load the corresponding data file and save the data to a linked list after a specific profile is 
+selected/created. Each node is an event. When a new event is created, the program inserts the new node to the list.
 
 User instruction guide:
 To compile the code, run "make" under the source code directory.
@@ -33,6 +32,10 @@ To enter the program, run "./list".
 Notice: the minimum recommended terminal size is 26(height)*80(width).
 
 Once you enter the program:
+The program will ask the user to select a profile or make a new one. By using up/down arrow key the user can make their selection.
+Notice: when naming a profile, the length of the name should be smaller than 100 characters.
+
+Once the profile is selected, new windows will be generated and now the program is ready to execute Add/Delete/Print operations.
 Press up/down arrow key to change highlighted option and hit "enter" to run the option.
 When adding events, simply follow the instruction in the program.
 Notice: 
@@ -48,6 +51,9 @@ Notice:
 There are enough instructions in the program so you should have no problems by following previous notices
 and program instructions.
 
-/**IMPORTANT**/
-Using ctrl-c to abort the program will cause data loss. 
-So try not to use ctrl-c to exit the program.
+Notice:
+
+Now, the ctrl-c signal is properly handled by using functions from signal.h. Feel free to hit ctrl-c and your data will still remain.
+However, the recommended way to exit the program is still by selecting the "Exit" option in the menu.
+
+Executing "make clean" command will also clean all events data!
