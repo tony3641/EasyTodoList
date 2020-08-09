@@ -2,6 +2,16 @@
 
 A Linux terminal-based graphical to-do list management tool
 
+## What's new
+
+Version 1.2 Update:
+
+​	Bug fixed when ```ctrl-c```/```cmd-c``` is called.
+
+Version 1.1 Update:
+
+​	Now the profile selection function is available.
+
 ## Intro
 
 EasyToDoList is a to-do list management tool running on the command line with the "graphics window". The graphical window offers a more straightforward user experience and the user will no longer need to memorize commands to use. The user can add, delete and view the events stored by external data files so events data won't be lost 
@@ -11,11 +21,21 @@ when the computer restarts.
 
 <div style="text-align: center;"><img src="menu.JPG" alt="Main Menu" style="zoom: 50%;" /></div>
 
+
+
+---
+
+
+
 You can create different profile to save events separately every time you launch the application.
 
 <div style="text-align: center;"><img src="profile.JPG" alt="Profile Selection" style="zoom:50%;" /></div>
 
+---
 
+
+
+<div style="text-align: center;"><img src="add.JPG" alt="Adding a new event" style="zoom:50%;" /></div>
 
 ## Approach
 
@@ -74,15 +94,15 @@ Notice: when naming a profile, the length of the name should be smaller than 100
 
 **Once the profile is selected:**
 
-New windows will be generated and now the program is ready to execute Add/Delete/Print operations. Press ```up/down``` arrow key to change highlighted option and hit ```enter``` to run the option. When adding events, simply follow the instruction in the program.
+New windows will be generated and now the program is ready to execute Add/Delete/Print operations. Press ```up/down``` arrow key to change highlighted option and hit ```Enter``` to run the option. When adding events, simply follow the instruction in the program.
 
 **Notice**
 
 - for the name of the events, please enter less than 100 characters
 - for date of the events, the program assumes the length of the input is strictly 10 (```MM/DD/YYYY```). However, you can use any other char instead of ```/``` since the program only cares about certain positions containing date information.
 - for the time of the events, the program assumes the length of the input is strictly 5 (```HH:MM```). Same here, you do not necessarily need to use ```:```.
-- the ```ctrl-c```/```cmd-c``` signal is properly handled by using functions from ```signal.h```. Feel free to hit ```ctrl-c```/```cmd-c``` and your data will still remain. However, the recommended way to exit the program is still by selecting the "Exit" option in the menu.
+- the ```ctrl-c```/```cmd-c``` signal is properly handled by using functions from ```signal.h```. Feel free to hit ```ctrl-c```/```cmd-c``` and your data will still remain. However, the recommended way to exit the program is still "Exit" option in the menu.
 
 **WARNING**:
 
-​	You may lose ALL events data when command ```make clean``` is called!
+​	You may lose **ALL** events data when command ```make clean``` is called!
