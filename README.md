@@ -7,13 +7,13 @@ A Linux terminal-based graphical to-do list management tool
 EasyToDoList is a to-do list management tool running on the command line with the "graphics window". The graphical window offers a more straightforward user experience and the user will no longer need to memorize commands to use. The user can add, delete and view the events stored by external data files so events data won't be lost 
 when the computer restarts.
 
-![Main Menu](C:\Users\tony3\Contacts\Desktop\EasyTodoList\readmeSRC\menu.JPG)
+![Main Menu](C:\Users\tony3\Contacts\Desktop\EasyTodoList\menu.JPG)
 
 
 
 You can create different profile to save events separately every time you launch the application.
 
-![Profile Selection](C:\Users\tony3\Contacts\Desktop\EasyTodoList\readmeSRC\profile.JPG)
+![Profile Selection](C:\Users\tony3\Contacts\Desktop\EasyTodoList\profile.JPG)
 
 
 
